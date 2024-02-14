@@ -4,11 +4,28 @@ export default function Home() {
   const [comment, setComment] = useState('');
   const [commentsList, setCommentsList] = useState([]);
 
-  const submitComment = (e) => {
+  const submitComment = async (e) => {
     e.preventDefault();
-    // Ajoute directement le commentaire à la liste sans sanitisation
-    setCommentsList([...commentsList, comment]);
-    setComment(''); // Réinitialise le champ de commentaire
+    try {
+      const response = await fetch('/api/comments', { 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment }), 
+      });
+
+      if (!response.ok) {
+        throw new Error('La requête a échoué');
+      }
+
+     
+      const updatedComment = await response.json(); 
+      setCommentsList([...commentsList, updatedComment]);
+      setComment(''); 
+    } catch (error) {
+      console.error('Erreur lors de l’envoi du commentaire:', error);
+     
+    }
   };
 
   return (
@@ -30,8 +47,6 @@ export default function Home() {
         <h2 className="text-2xl font-semibold mb-4">Commentaires précédents</h2>
         <div className="space-y-4">
           {commentsList.map((comment, index) => (
-            // Pour éviter l'exécution de code JavaScript malveillant, il est recommandé de ne pas utiliser dangerouslySetInnerHTML
-            // et plutôt de s'assurer que le contenu est correctement échappé ou nettoyé avant l'affichage.
             <p key={index} className="bg-gray-100 rounded-md p-4 text-black">{comment}</p>
           ))}
         </div>
