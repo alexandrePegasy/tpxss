@@ -1,30 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [comment, setComment] = useState('');
   const [commentsList, setCommentsList] = useState([]);
 
+  useEffect(() => {
+    // Fonction pour charger les commentaires depuis le backend
+    const loadComments = async () => {
+      try {
+        const response = await fetch('/api/comments', {
+          method: 'GET',
+        });
+        if (!response.ok) {
+          throw new Error('La requête pour récupérer les commentaires a échoué');
+        }
+        const comments = await response.json();
+        setCommentsList(comments);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des commentaires:', error);
+      }
+    };
+
+    loadComments();
+  }, []); // Ce tableau vide signifie que cet effet ne s'exécute qu'au montage du composant
+
   const submitComment = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/comments', { 
+      const response = await fetch('/api/comments', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ comment }), 
+        body: JSON.stringify({ comment }),
       });
 
       if (!response.ok) {
         throw new Error('La requête a échoué');
       }
 
-     
       const updatedComment = await response.json(); 
       setCommentsList([...commentsList, updatedComment]);
       setComment(''); 
     } catch (error) {
       console.error('Erreur lors de l’envoi du commentaire:', error);
-     
     }
   };
 
@@ -47,7 +66,7 @@ export default function Home() {
         <h2 className="text-2xl font-semibold mb-4">Commentaires précédents</h2>
         <div className="space-y-4">
           {commentsList.map((comment, index) => (
-            <p key={index} className="bg-gray-100 rounded-md p-4 text-black">{comment}</p>
+            <p key={index} className="bg-gray-100 rounded-md p-4 text-black">{comment.comment}</p> // Assurez-vous que la structure de l'objet comment correspond à ce que votre backend renvoie
           ))}
         </div>
       </div>

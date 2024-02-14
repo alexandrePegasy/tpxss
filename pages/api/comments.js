@@ -23,9 +23,12 @@ export default async function handler(req, res) {
     const comments = await db.all('SELECT * FROM comments');
     res.status(200).json(comments);
   } else if (req.method === 'POST') {
-   
     const { comment } = req.body;
-    await db.run('INSERT INTO comments (comment) VALUES (?)', comment);
-    res.status(201).json({ message: 'Commentaire ajouté' });
+    const result = await db.run('INSERT INTO comments (comment) VALUES (?)', comment);
+    const commentId = result.lastID; // Récupère l'ID du dernier commentaire inséré
+  
+    const insertedComment = await db.get('SELECT * FROM comments WHERE id = ?', commentId);
+  
+    res.status(201).json(insertedComment);
   }
 }
