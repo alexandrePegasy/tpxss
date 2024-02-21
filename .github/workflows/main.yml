@@ -23,7 +23,7 @@ jobs:
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@master
       with:
-        args: >
-          -Dsonar.projectKey=TEST-TP
-          -Dsonar.host.url=http://188.166.161.249
-          -Dsonar.login=86b9a37b1fa27a214a6de509624c984b2ea23943
+       env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
