@@ -48,8 +48,8 @@ jobs:
       - name: Set up JDK 11
         uses: actions/checkout@v2
          with:
-          java-version:'11'
-          distribution:'adopt'
+           java-version:'11'
+           distribution:'adopt'
           
       - name: SonarQube Scan
         uses: SonarSources/sonarqube-scan-action@master
