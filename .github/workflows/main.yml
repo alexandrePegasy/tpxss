@@ -1,0 +1,29 @@
+name: SonarQube Scan
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  sonarqube_scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@master
+      with:
+        args: >
+          -Dsonar.projectKey=TEST-TP
+          -Dsonar.host.url=http://188.166.161.249
+          -Dsonar.login=86b9a37b1fa27a214a6de509624c984b2ea23943
