@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useMemo, type CSSProperties } from "react";
 
 export default function Home() {
   const [comment, setComment] = useState('');
